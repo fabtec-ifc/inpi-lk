@@ -2,43 +2,71 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    public static function getAuthUser()
+    {
+        if (!session('auth')) {
+            return to_route('app');
+        }
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+        return session('auth');
+    }
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public static function getLogin()
+    {
+        $authUser = self::getAuthUser();
+
+        return $authUser['login'];
+    }
+
+    public static function getToken()
+    {
+        $authUser = self::getAuthUser();
+
+        return $authUser['token'];
+    }
+
+    public static function login($input)
+    {
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+        ])->withBody(
+            json_encode([
+                'login' => $input['login'],
+                'senha' => $input['senha']
+            ]),
+            'application/json'
+        )->post('http://200.135.58.39:5000/login');
+
+        return $response->json();
+    }
+
+    public static function addUserSession($authUser)
+    {
+        Session::put('auth', ['login' => $authUser['login'], 'token' => $authUser['detalhes']]);
+    }
+
+    public static function deleteUserSession()
+    {
+        Session::remove('auth');
+    }
+
+    public static function search($search)
+    {
+        $token = self::getToken();
+
+        $response = Http::withHeaders([
+            'Authorization' => "Bearer ".$token,
+        ])->get("http://200.135.58.39:5000/consultar/patente/$search")->json();
+
+        return $response;
+    }
 }
