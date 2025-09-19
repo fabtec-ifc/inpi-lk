@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,19 +12,18 @@ return new class extends Migration
     {
         Schema::create('registros', function (Blueprint $table) {
             $table->id();
-            $table->string('titulo', 100);
-            $table->integer('rl')->nullable(); // número de registro local, se aplicável
-            $table->string('processo', 45)->nullable();
+            $table->string('titulo');
+            $table->string('numero_pedido');
+            $table->string('rl')->nullable();
             $table->date('dataDeposito')->nullable();
             $table->date('proximaAnuidade')->nullable();
-            $table->dateTime('ultimaVerificacao')->nullable();
-            $table->foreignId('unidade_id')->nullable()->constrained('unidades')->onDelete('set null');
-            $table->boolean('ativo')->default(true);
-            $table->string('ipc', 45)->nullable();
+            $table->date('ultimaVerificacao')->nullable();
+            $table->string('ipc')->nullable();
             $table->date('publicacao')->nullable();
             $table->text('resumo')->nullable();
-            $table->foreignId('estado_id')->nullable()->constrained('estados')->onDelete('set null');
-            $table->foreignId('tipoRegistro_id')->constrained('tipo_registros'); // 1=Patente, 2=Marca etc.
+            $table->string('status')->default('Em análise');
+            $table->foreignId('unidade_id')->nullable()->constrained('unidades')->onDelete('set null');
+            $table->foreignId('tipoRegistro_id')->constrained('tipo_registros')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -38,3 +36,4 @@ return new class extends Migration
         Schema::dropIfExists('registros');
     }
 };
+?>

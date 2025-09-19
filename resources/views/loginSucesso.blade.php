@@ -1,57 +1,96 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Bem-Sucedido</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-            background-color: #f5f5f5;
-        }
-        .success-box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            display: inline-block;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .success-icon {
-            color: #28a745;
-            font-size: 50px;
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="success-box">
-        <div class="success-icon">✓</div>
-        <h1>Login Realizado com Sucesso!</h1>
+@extends('layouts.app')
 
-        <div style="margin: 30px 0; text-align: left; display: inline-block;">
-            @if(session('usuario'))
-                <p><strong>Usuário:</strong> {{ session('usuario') }}</p>
-                <p><strong>Token:</strong> {{ substr(session('token'), 0, 15) }}... (exibição parcial)</p>
-            @else
-                <p style="color: red;">Nenhuma sessão ativa encontrada</p>
-            @endif
-        </div>
+@section('title', 'Minhas Patentes')
 
-        <div>
-            <a href="/login" style="
-                display: inline-block;
-                padding: 10px 20px;
-                background: #007bff;
-                color: white;
-                text-decoration: none;
-                border-radius: 5px;
-                margin-top: 20px;
-            ">Voltar ao Login</a>
+@section('body')
+    @component('nav') @endcomponent
+
+    <div class="container-lg py-4">
+        <div class="row">
+            <div class="col-12">
+
+                <h3>Minhas Patentes</h3>
+                @if($patentesLocal->isEmpty())
+                    <p>Nenhuma patente encontrada no banco local.</p>
+                @else
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nº do Processo</th>
+                                <th>Título</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($patentesLocal as $patente)
+                                <tr>
+                                    <td>{{ $patente->id }}</td>
+                                    <td>{{ $patente->numero_pedido }}</td>
+                                    <td>{{ $patente->titulo ?? '-' }}</td>
+                                    <td>{{ $patente->status ?? '-' }}</td>
+                                    <td>
+                                        <a href="{{ $patente->getViewUrl() }}" class="br-button primary small">Abrir</a>
+                                        <a href="{{ route('registros.edit', $patente->id) }}" class="br-button secondary small">Editar</a>
+
+                                        <!-- Botão de excluir -->
+                                        <form action="{{ route('registros.destroy', $patente->id) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="br-button danger small"
+                                                    onclick="return confirm('Tem certeza que deseja excluir esta patente?')">
+                                                Excluir
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+
+                <h3 class="mt-4">Minhas Marcas</h3>
+                @if($marcasLocal->isEmpty())
+                    <p>Nenhuma marca encontrada no banco local.</p>
+                @else
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nº do Processo</th>
+                                <th>Título</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($marcasLocal as $marca)
+                                <tr>
+                                    <td>{{ $marca->id }}</td>
+                                    <td>{{ $marca->numero_pedido }}</td>
+                                    <td>{{ $marca->titulo ?? '-' }}</td>
+                                    <td>{{ $marca->status ?? '-' }}</td>
+                                    <td>
+                                        <a href="{{ $marca->getViewUrl() }}" class="br-button primary small">Abrir</a>
+                                        <a href="{{ route('registros.edit', $marca->id) }}" class="br-button secondary small">Editar</a>
+
+                                        <!-- Botão de excluir -->
+                                        <form action="{{ route('registros.destroy', $marca->id) }}" method="POST" style="display:inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="br-button danger small"
+                                                    onclick="return confirm('Tem certeza que deseja excluir esta marca?')">
+                                                Excluir
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            </div>
         </div>
     </div>
-</body>
-</html>
+@endsection
