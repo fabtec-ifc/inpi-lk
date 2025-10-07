@@ -10,9 +10,12 @@ return new class extends Migration
     {
         Schema::create('unidades', function (Blueprint $table) {
             $table->id();
-            $table->string('nome');       // Nome do campus/unidade
-            $table->string('sigla');      // Ex: IFC, IFC-BLU
-            $table->string('cidade');     // Cidade onde está localizada
+            $table->string('nome');
+            $table->string('sigla')->nullable();
+            $table->string('tipo')->default('campus');
+            $table->foreignId('unidade_pai_id')->nullable()
+                  ->constrained('unidades')
+                  ->nullOnDelete();
             $table->timestamps();
         });
     }

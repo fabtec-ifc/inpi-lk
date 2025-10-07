@@ -31,9 +31,7 @@
                                     <td>{{ $patente->titulo ?? '-' }}</td>
                                     <td>{{ $patente->status ?? '-' }}</td>
                                     <td>
-                                        <a href="{{ $patente->getViewUrl() }}" class="br-button primary small">Abrir</a>
-                                        <a href="{{ route('registros.edit', $patente->id) }}" class="br-button secondary small">Editar</a>
-
+<a href="{{ route('registro.abrirPatente', $patente->numero_pedido) }}" class="br-button primary small">Abrir</a>
                                         <!-- Botão de excluir -->
                                         <form action="{{ route('registros.destroy', $patente->id) }}" method="POST" style="display:inline-block;">
                                             @csrf
@@ -72,7 +70,7 @@
                                     <td>{{ $marca->titulo ?? '-' }}</td>
                                     <td>{{ $marca->status ?? '-' }}</td>
                                     <td>
-                                        <a href="{{ $marca->getViewUrl() }}" class="br-button primary small">Abrir</a>
+<a href="{{ route('registro.abrirMarca', $marca->numero_pedido) }}" class="br-button primary small">Abrir</a>
                                         <a href="{{ route('registros.edit', $marca->id) }}" class="br-button secondary small">Editar</a>
 
                                         <!-- Botão de excluir -->

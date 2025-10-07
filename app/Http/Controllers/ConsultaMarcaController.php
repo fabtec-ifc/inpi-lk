@@ -15,7 +15,7 @@ class ConsultaMarcaController extends Controller
             return back()->with('error', 'Preencha todos os campos.');
         }
 
-        $url = "http://200.135.58.39:5000/consultar/marca/{$filtro}";
+        $url = "http://nit.riodosul.ifc.edu.br:444/consultar/marca/{$filtro}";
         $response = Http::withToken($token)->get($url);
 
         if ($response->failed()) {

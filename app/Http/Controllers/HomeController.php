@@ -28,14 +28,14 @@ class HomeController extends Controller
 
         if ($unidadeId) {
             // Patentes
-            $urlPatentes = "http://200.135.58.39:5000/consultar/patente/unidade/{$unidadeId}";
+            $urlPatentes = "http://nit.riodosul.ifc.edu.br:444/consultar/patente/unidade/{$unidadeId}";
             $responsePatentes = Http::withToken($token)->get($urlPatentes);
             if ($responsePatentes->successful()) {
                 $patentesApi = collect($responsePatentes->json()['detalhes'] ?? []);
             }
 
             // Marcas
-            $urlMarcas = "http://200.135.58.39:5000/consultar/marca/unidade/{$unidadeId}";
+            $urlMarcas = "http://nit.riodosul.ifc.edu.br:444/consultar/marca/unidade/{$unidadeId}";
             $responseMarcas = Http::withToken($token)->get($urlMarcas);
             if ($responseMarcas->successful()) {
                 $marcasApi = collect($responseMarcas->json()['detalhes'] ?? []);

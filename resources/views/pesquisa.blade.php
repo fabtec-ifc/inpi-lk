@@ -18,8 +18,7 @@
                     </div>
                 </div>
 
-                <form id="formBusca" method="POST">
-                    @csrf
+                <form id="formBusca" method="GET">
                     <input type="hidden" name="tipoBusca" id="inputTipoBusca" value="patente">
 
                     <div class="br-input large input-button">
@@ -53,22 +52,28 @@
 
             function atualizarAction() {
                 form.action = radioMarca.checked
-                    ? "{{ route('marcas.consultar') }}"
-                    : "{{ route('patentes.consultar') }}";
+                    ? "{{ route('registro.abrirMarca', ['numero' => '__numero__']) }}"
+                    : "{{ route('registro.abrirPatente', ['numero' => '__numero__']) }}";
             }
 
-            radioPatente.addEventListener('change', () => {
-                atualizarPlaceholder();
-                atualizarAction();
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const numero = input.value.trim();
+                if (!numero) return;
+
+                // Atualiza a action substituindo __numero__ pelo valor digitado
+                let action = radioMarca.checked
+                    ? "{{ route('registro.abrirMarca', ['numero' => '__numero__']) }}"
+                    : "{{ route('registro.abrirPatente', ['numero' => '__numero__']) }}";
+                action = action.replace('__numero__', numero);
+
+                window.location.href = action;
             });
 
-            radioMarca.addEventListener('change', () => {
-                atualizarPlaceholder();
-                atualizarAction();
-            });
+            radioPatente.addEventListener('change', atualizarPlaceholder);
+            radioMarca.addEventListener('change', atualizarPlaceholder);
 
             atualizarPlaceholder();
-            atualizarAction();
         });
     </script>
 @endsection
